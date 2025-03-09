@@ -27,18 +27,18 @@ def ChatBot():
     query_type = analyze_input(query)
     print("You asked me about", query_type)
     if query_type == "restaurant":
-            query = query.lower()
-            location = None
-            food_type = None
-            for loc in locations:
-                if loc.lower() in query:
-                    location = loc
-                    break
-            for food in foods:
-                if food.lower() in query:
-                    food_type = food
-                    break
-            restaurant_query(query, location, food_type)
+        query = query.lower()
+        location = None
+        food_type = None
+        for loc in locations:
+            if loc.lower() in query:
+                location = loc
+                break
+        for food in foods:
+            if food.lower() in query:
+                food_type = food
+                break
+        restaurant_query(query, location, food_type)
     elif query_type == "weather":
         query = query.lower()
         location = None
@@ -54,6 +54,10 @@ def ChatBot():
         elif "next week" in query:
             day = "next_week"
         weather_query(query, location, day)
+    elif query_type == "train":
+        query = query.lower()
+        departure, arrival = extract_train_info(query)
+        train_query(departure, arrival)
     else:
         print("Sorry, I can't help you with that query.")
 
@@ -63,7 +67,7 @@ def analyze_input(question):
     keyword_mapping = {
         "weather": ["weather", "forecast", "temperature", "rain", "sunny"],
         "restaurant": ["restaurant", "food", "eat", "cuisine", "dining", "hungry"],
-        "public transport": ["tram", "bus", "metro", "train", "transport"]
+        "train": ["train", "travel", "rail", "station", "schedule", "departure", "arrival"],
     }
     
     for category, keywords in keyword_mapping.items():
@@ -113,6 +117,47 @@ def restaurant_query(query, location, food_type):
             print(f"- {row[0]}")
     else:
         print("Sorry, no restaurants match your search criteria.")
+
+# Function to query train information
+def train_query(departure, arrival):
+    if departure is None:
+        departure = input("What is the departure station? ")
+    if arrival is None:
+        arrival = input("What is the arrival station? ")
+
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Trains WHERE LOWER(departure_location) LIKE LOWER(%s) AND LOWER(arrival_location) LIKE LOWER(%s)", (departure, arrival))
+    results = cursor.fetchall()
+    conn.close()
+
+    if results:
+        print("Here are the train schedules for your query:")
+        for row in results:
+            print(f"{row[3]} to {row[4]} - Departure Time: {row[2]}")
+    else:
+        print(f'Sorry, no trains match your search criteria. {departure} to {arrival}')
+
+def extract_train_info(query):
+    query = query.lower()
+
+    # Match "from X to Y" where X and Y are proper locations
+    match = re.search(r'from\s+([\w\s]+?)\s+to\s+([\w\s]+?)(?:\s|$)', query)
+    if match:
+        departure, arrival = match.groups()
+        return departure.strip(), arrival.strip()
+
+    # Match "from X"
+    match = re.search(r'from\s+([\w\s]+?)(?:\s|$)', query)
+    if match:
+        return match.group(1).strip(), None
+
+    # Match "to X", but ensure we stop at extra words like "travel"
+    match = re.search(r'\bto\s+([\w\s]+?)(?:\s|$)', query)
+    if match:
+        return None, match.group(1).strip()
+
+    return None, None
 
 connect_db()  
 ChatBot()

@@ -7,11 +7,18 @@ CREATE TABLE Weather (
     PRIMARY KEY(location_, date_, time_)
 );
 
-
-
 CREATE TABLE Restaurants (
     rest_location TEXT NOT NULL,
     food_type TEXT NOT NULL,
     name_ TEXT NOT NULL,
     PRIMARY KEY(rest_location, food_type)
 );
+
+CREATE TABLE Trains (
+    train_id SERIAL PRIMARY KEY,
+    departure_time TIME NOT NULL,
+    arrival_time TIME NOT NULL,
+    departure_location TEXT NOT NULL,
+    arrival_location TEXT NOT NULL
+);
+

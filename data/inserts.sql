@@ -123,3 +123,24 @@ INSERT INTO Restaurants (rest_location, food_type, name_) VALUES
 ('Detroit', 'Mediterranean', 'Olive Oil'),
 ('Nashville', 'Hot Chicken', 'Hot Hot Hot'),
 ('Minneapolis', 'Nordic', 'Viking Feast');
+
+-- Insert data into Trains table
+INSERT INTO Trains (departure_time, arrival_time, departure_location, arrival_location) VALUES
+('08:00:00', '10:30:00', 'New York', 'Boston'),
+('09:00:00', '11:45:00', 'Los Angeles', 'San Francisco'),
+('10:00:00', '12:30:00', 'Chicago', 'Detroit'),
+('11:00:00', '13:15:00', 'Houston', 'Austin'),
+('12:00:00', '14:00:00', 'Miami', 'Atlanta'),
+('13:00:00', '15:30:00', 'Seattle', 'Portland'),
+('14:00:00', '16:45:00', 'Denver', 'Phoenix'),
+('15:00:00', '17:30:00', 'Boston', 'New York'),
+('16:00:00', '18:15:00', 'San Francisco', 'Los Angeles'),
+('17:00:00', '19:00:00', 'Detroit', 'Chicago'),
+('18:00:00', '20:30:00', 'Austin', 'Houston'),
+('19:00:00', '21:45:00', 'Atlanta', 'Miami'),
+('20:00:00', '22:15:00', 'Phoenix', 'Las Vegas'),
+('21:00:00', '23:30:00', 'Portland', 'Seattle'),
+('22:00:00', '00:30:00', 'Las Vegas', 'Los Angeles'),
+('23:00:00', '01:00:00', 'Nashville', 'Minneapolis'),
+('00:00:00', '02:00:00', 'Minneapolis', 'Nashville');
+
