@@ -21,50 +21,61 @@ def ChatBot():
     foods = [row[0] for row in cursor.fetchall()]  # Extract values from tuples
     conn.close()
     
+
     print("Hello! I am chatbot. I am here to help you with your queries.")
     print("Please enter your query.")
-    query = input()
-    query_type = analyze_input(query)
-    print("You asked me about", query_type)
-    if query_type == "restaurants":
-        query = query.lower()
-        location = None
-        food_type = None
-        for loc in locations:
-            if loc.lower() in query:
-                location = loc
-                break
-        for food in foods:
-            if food.lower() in query:
-                food_type = food
-                break
-        restaurant_query(query, location, food_type)
-    elif query_type == "the weather":
-        query = query.lower()
-        location = None
-        day = None
-        for loc in locations:
-            if loc.lower() in query:
-                location = loc
-                break
-        if "today" in query:
-            day = "today"
-        elif "tomorrow" in query:
-            day = "tomorrow"
-        elif "next week" in query:
-            day = "next_week"
-        weather_query(query, location, day)
-    elif query_type == "trains":
-        query = query.lower()
-        departure, arrival = None, None
-        for loc in locations:
-            if "from " + loc.lower() in query:
-                departure = loc
-            if "to " + loc.lower() in query:
-                arrival = loc
-        train_query(departure, arrival)
-    else:
-        print("Sorry, I can't help you with that query.")
+    while(True):
+        query = input()
+        query_type = analyze_input(query)
+
+        if query == "exit":
+            break
+        if(query_type == "restaurants" or query_type == "the weather" or query_type == "trains"):
+            print("You asked me about", query_type)
+        if query_type == "restaurants":
+            query = query.lower()
+            location = None
+            food_type = None
+            for loc in locations:
+                if loc.lower() in query:
+                    location = loc
+                    break
+            for food in foods:
+                if food.lower() in query:
+                    food_type = food
+                    break
+            restaurant_query(query, location, food_type)
+            break
+        elif query_type == "the weather":
+            query = query.lower()
+            location = None
+            day = None
+            for loc in locations:
+                if loc.lower() in query:
+                    location = loc
+                    break
+            if "today" in query:
+                day = "today"
+            elif "tomorrow" in query:
+                day = "tomorrow"
+            elif "next week" in query:
+                day = "next_week"
+            weather_query(query, location, day)
+            break
+        elif query_type == "trains":
+            query = query.lower()
+            departure, arrival = None, None
+            for loc in locations:
+                if "from " + loc.lower() in query:
+                    departure = loc
+                if "to " + loc.lower() in query:
+                    arrival = loc
+            train_query(departure, arrival)
+            break
+        else:
+            print("Sorry, I can't help you with that query.")
+            print("Maybe try again?")
+            print("Or if you want to exit, please write exit")
 
 def analyze_input(question):
     question = question.lower()
@@ -96,7 +107,7 @@ def weather_query(query, location, day):
     conn.close()
 
     if results:
-        print("Here is the weather forecast for", location, "for", day)
+        print("Here is the weather forecast for", row[2], "for", row[3])
         for row in results:
             print(f"- {row[2]}: {row[3]}")
     else:
