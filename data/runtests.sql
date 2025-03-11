@@ -11,6 +11,10 @@ GRANT ALL ON SCHEMA public TO CURRENT_USER;
 SET client_min_messages TO NOTICE; -- More talk
 \set QUIET false
 
+-- extensions
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+SET pg_trgm.similarity_threshold = 0.5;
+
 
 -- \ir is for include relative, it will run files in the same directory as this file
 -- Note that these are not SQL statements but rather Postgres commands (no terminating semicolon). 

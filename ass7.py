@@ -83,13 +83,15 @@ def analyze_input(question):
     
 def weather_query(query, location, day):
     if location is None:
-        location = input("What location are you interested in? ")
+        print("What location are you interested in?")
+        location = input()
     if day is None:
-        day = input("What day are you interested in? ")
+        print("What day are you interested in?")
+        day = input()
     
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Weather WHERE LOWER(location_) LIKE LOWER(%s) AND LOWER(date_) LIKE LOWER(%s)", (location, day))
+    cursor.execute("SELECT * FROM Weather WHERE LOWER(location_) %% LOWER(%s) AND LOWER(date_) %% LOWER(%s)", (location, day))
     results = cursor.fetchall()
     conn.close()
 
@@ -104,14 +106,16 @@ def weather_query(query, location, day):
 def restaurant_query(query, location, food_type):
     query = query.lower()
     if location is None:
-        location = input("What location are you looking for restaurants in? ")
+        print("What location are you looking for restaurants in?")
+        location = input()
     if food_type is None:
-        food_type = input("What type of food are you interested in? ")
+        print("What type of food are you interested in?")
+        food_type = input()
 
     conn = connect_db()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT name_ FROM Restaurants WHERE LOWER(rest_location) LIKE LOWER(%s) AND LOWER(food_type) LIKE LOWER(%s)", (location, food_type))
+    cursor.execute("SELECT name_ FROM Restaurants WHERE LOWER(rest_location) %% LOWER(%s) AND LOWER(food_type) %% LOWER(%s)", (location, food_type))
     results = cursor.fetchall()
 
     conn.close()
@@ -126,13 +130,15 @@ def restaurant_query(query, location, food_type):
 # Function to query train information
 def train_query(departure, arrival):
     if departure is None:
-        departure = input("What is the departure station? ")
+        print("What is the departure station? ")
+        departure = input()
     if arrival is None:
-        arrival = input("What is the arrival station? ")
+        print("What is the arrival station?")
+        arrival = input()
 
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Trains WHERE LOWER(departure_location) LIKE LOWER(%s) AND LOWER(arrival_location) LIKE LOWER(%s)", (departure, arrival))
+    cursor.execute("SELECT * FROM Trains WHERE LOWER(departure_location) %% LOWER(%s) AND LOWER(arrival_location) %% LOWER(%s)", (departure, arrival))
     results = cursor.fetchall()
     conn.close()
 
