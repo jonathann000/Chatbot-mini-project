@@ -11,7 +11,7 @@ CREATE TABLE Restaurants (
     rest_location TEXT NOT NULL,
     food_type TEXT NOT NULL,
     name_ TEXT NOT NULL,
-    PRIMARY KEY(rest_location, food_type)
+    PRIMARY KEY(rest_location, food_type, name_)
 );
 
 CREATE TABLE Trains (
