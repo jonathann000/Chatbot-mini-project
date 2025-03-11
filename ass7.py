@@ -26,7 +26,7 @@ def ChatBot():
     query = input()
     query_type = analyze_input(query)
     print("You asked me about", query_type)
-    if query_type == "restaurant":
+    if query_type == "restaurants":
         query = query.lower()
         location = None
         food_type = None
@@ -39,7 +39,7 @@ def ChatBot():
                 food_type = food
                 break
         restaurant_query(query, location, food_type)
-    elif query_type == "weather":
+    elif query_type == "the weather":
         query = query.lower()
         location = None
         day = None
@@ -54,7 +54,7 @@ def ChatBot():
         elif "next week" in query:
             day = "next_week"
         weather_query(query, location, day)
-    elif query_type == "train":
+    elif query_type == "trains":
         query = query.lower()
         departure, arrival = None, None
         for loc in locations:
@@ -70,9 +70,9 @@ def analyze_input(question):
     question = question.lower()
     
     keyword_mapping = {
-        "weather": ["weather", "forecast", "temperature", "rain", "sunny"],
-        "restaurant": ["restaurant", "food", "eat", "cuisine", "dining", "hungry"],
-        "train": ["train", "travel", "rail", "station", "schedule", "departure", "arrival"],
+        "the weather": ["weather", "forecast", "temperature", "rain", "sunny"],
+        "restaurants": ["restaurant", "food", "eat", "cuisine", "dining", "hungry"],
+        "trains": ["train", "travel", "rail", "station", "schedule", "departure", "arrival"],
     }
     
     for category, keywords in keyword_mapping.items():
