@@ -56,7 +56,12 @@ def ChatBot():
         weather_query(query, location, day)
     elif query_type == "train":
         query = query.lower()
-        departure, arrival = extract_train_info(query)
+        departure, arrival = None, None
+        for loc in locations:
+            if "from " + loc.lower() in query:
+                departure = loc
+            if "to " + loc.lower() in query:
+                arrival = loc
         train_query(departure, arrival)
     else:
         print("Sorry, I can't help you with that query.")
@@ -137,27 +142,6 @@ def train_query(departure, arrival):
             print(f"{row[3]} to {row[4]} - Departure Time: {row[2]}")
     else:
         print(f'Sorry, no trains match your search criteria. {departure} to {arrival}')
-
-def extract_train_info(query):
-    query = query.lower()
-
-    # Match "from X to Y" where X and Y are proper locations
-    match = re.search(r'from\s+([\w\s]+?)\s+to\s+([\w\s]+?)(?:\s|$)', query)
-    if match:
-        departure, arrival = match.groups()
-        return departure.strip(), arrival.strip()
-
-    # Match "from X"
-    match = re.search(r'from\s+([\w\s]+?)(?:\s|$)', query)
-    if match:
-        return match.group(1).strip(), None
-
-    # Match "to X", but ensure we stop at extra words like "travel"
-    match = re.search(r'\bto\s+([\w\s]+?)(?:\s|$)', query)
-    if match:
-        return None, match.group(1).strip()
-
-    return None, None
 
 connect_db()  
 ChatBot()
