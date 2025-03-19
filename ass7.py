@@ -1,5 +1,14 @@
 import psycopg2
 import re
+import numpy as np
+import joblib
+from langchain_nomic.embeddings import NomicEmbeddings
+
+# Load the pretrained classifier
+classifier = joblib.load('trained_classifier_model.pkl')
+
+# Initialize embedding model
+embedding_model = NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local")
 
 def connect_db():
     return psycopg2.connect(
@@ -12,15 +21,14 @@ def ChatBot():
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute("SELECT DISTINCT * FROM locations")
-    locations = [row[0] for row in cursor.fetchall()]  # Extract values from tuples
+    locations = [row[0] for row in cursor.fetchall()] 
     conn.close()
 
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute("SELECT DISTINCT * FROM foods")
-    foods = [row[0] for row in cursor.fetchall()]  # Extract values from tuples
+    foods = [row[0] for row in cursor.fetchall()]  
     conn.close()
-    
 
     print("Hello! I am chatbot. I am here to help you with your queries.")
     print("Please enter your query.")
@@ -30,9 +38,9 @@ def ChatBot():
 
         if query == "exit":
             break
-        if(query_type == "restaurants" or query_type == "the weather" or query_type == "trains"):
+        if(query_type == "restaurant" or query_type == "weather" or query_type == "transport"):
             print("You asked me about", query_type)
-        if query_type == "restaurants":
+        if query_type == "restaurant":
             query = query.lower()
             location = None
             food_type = None
@@ -46,7 +54,7 @@ def ChatBot():
                     break
             restaurant_query(query, location, food_type)
             break
-        elif query_type == "the weather":
+        elif query_type == "weather":
             query = query.lower()
             location = None
             day = None
@@ -62,7 +70,7 @@ def ChatBot():
                 day = "next_week"
             weather_query(query, location, day)
             break
-        elif query_type == "trains":
+        elif query_type == "transport":
             query = query.lower()
             departure, arrival = None, None
             for loc in locations:
@@ -79,18 +87,15 @@ def ChatBot():
 
 def analyze_input(question):
     question = question.lower()
-    
-    keyword_mapping = {
-        "the weather": ["weather", "forecast", "temperature", "rain", "sunny"],
-        "restaurants": ["restaurant", "food", "eat", "cuisine", "dining", "hungry"],
-        "trains": ["train", "travel", "rail", "station", "schedule", "departure", "arrival"],
-    }
-    
-    for category, keywords in keyword_mapping.items():
-        if any(re.search(r'\b' + keyword + r'\b', question) for keyword in keywords):
-            return category
-    
-    return "other"
+
+    # Generate embeddings for the question
+    question_embedding = np.array([embedding_model.embed_query(question)])
+
+    # Predict the query type using the classifier
+    predicted_category = classifier.predict(question_embedding)[0]
+
+    # Return the predicted category
+    return predicted_category
     
 def weather_query(query, location, day):
     if location is None:
@@ -99,7 +104,7 @@ def weather_query(query, location, day):
     if day is None:
         print("What day are you interested in?")
         day = input()
-    
+
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Weather WHERE LOWER(location_) %% LOWER(%s) AND LOWER(date_) %% LOWER(%s)", (location, day))
@@ -107,13 +112,12 @@ def weather_query(query, location, day):
     conn.close()
 
     if results:
-        print("Here is the weather forecast for", row[2], "for", row[3])
+        print("Here is the weather forecast in", location, "for", day)
         for row in results:
             print(f"- {row[2]}: {row[3]}")
     else:
         print("Sorry, I don't have any weather information for that location and time.")
 
-# Function to query restaurant information
 def restaurant_query(query, location, food_type):
     query = query.lower()
     if location is None:
@@ -138,7 +142,6 @@ def restaurant_query(query, location, food_type):
     else:
         print("Sorry, no restaurants match your search criteria.")
 
-# Function to query train information
 def train_query(departure, arrival):
     if departure is None:
         print("What is the departure station? ")
