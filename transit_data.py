@@ -63,6 +63,7 @@ def get_filtered_response(data):
             print(f" Duration: {step['duration']['text']}")
 
 
-api_key = get_api_key("GOOGLE_API","DesignOfAI-ass7/apikey.txt") 
-response = get_transit_directions(api_key, "lindholmen", "chalmers")
-get_filtered_response(response)
+def transit_app(location, destination):
+    api_key = get_api_key("GOOGLE_API","/Users/tjabo/Desktop/Skola/DesignOfAI/Assignments/Ass7/apikey.txt")
+    response = get_transit_directions(api_key, location, destination)
+    get_filtered_response(response)

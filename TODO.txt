@@ -1,0 +1,7 @@
+Improve classifier model
+
+Create (JSON) frame object for information 
+
+Use spacy for information extraction
+
+

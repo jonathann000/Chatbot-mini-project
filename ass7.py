@@ -3,6 +3,8 @@ import re
 import numpy as np
 import joblib
 from langchain_nomic.embeddings import NomicEmbeddings
+from transit_data import transit_app
+from weather_data import weather_app
 
 # Load the pretrained classifier
 classifier = joblib.load('trained_classifier_model.pkl')
@@ -58,27 +60,27 @@ def ChatBot():
             query = query.lower()
             location = None
             day = None
-            for loc in locations:
-                if loc.lower() in query:
-                    location = loc
-                    break
+            print("What location are you interested in?")
+            location = input()
             if "today" in query:
-                day = "today"
+                day = "1"
             elif "tomorrow" in query:
-                day = "tomorrow"
+                day = "2"
             elif "next week" in query:
-                day = "next_week"
-            weather_query(query, location, day)
+                day = "3"
+            weather_app(location, day)
+            #weather_query(query, location, day)
             break
         elif query_type == "transport":
             query = query.lower()
             departure, arrival = None, None
-            for loc in locations:
-                if "from " + loc.lower() in query:
-                    departure = loc
-                if "to " + loc.lower() in query:
-                    arrival = loc
-            train_query(departure, arrival)
+            print("Please enter the departure location")
+            departure = input()
+            print("Please enter the arrival location")
+            arrival = input()
+            print(departure, arrival)
+            transit_app(departure, arrival)
+            #train_query(departure, arrival)
             break
         else:
             print("Sorry, I can't help you with that query.")

@@ -33,7 +33,7 @@ def get_weather_data(api_key, location, days):
         return None
 
     
-def get_filtered_weather_data(data):
+def get_filtered_weather_data(data, days):
     location_name = data["location"]["name"]
     country = data["location"]["country"]
     '''
@@ -43,7 +43,7 @@ def get_filtered_weather_data(data):
     wind_kph = data["current"]["wind_kph"]
     '''
 
-    print(f"3-Day Weather Forecast for {location_name}, {country}:")
+    print(f"{days}-days Weather Forecast for {location_name}, {country}:")
 
     for day in data["forecast"]["forecastday"]:
         date = day["date"]
@@ -55,13 +55,13 @@ def get_filtered_weather_data(data):
         print(f"\nDate: {date}")
         print(f"- Condition: {condition}")
         print(f"- Max Temp: {max_temp}°C, Min Temp: {min_temp}°C")
-        print(f"- Chance of Rain: {chance_of_rain}%")
+        print(f"- Risk of Rain: {chance_of_rain}%")
         print("-------------------------------------------------")
 
+def weather_app(location, days):
+    API_KEY = get_api_key("WEATHER_API","apikey.txt") 
+    weather_data = get_weather_data(API_KEY, location, days)
+    get_filtered_weather_data(weather_data, days)
 
-API_KEY = get_api_key("WEATHER_API","DesignOfAI-ass7/apikey.txt") 
-location = "London"
-days = 3
-weather_data = get_weather_data(API_KEY, location, days)
-get_filtered_weather_data(weather_data)
+
 
