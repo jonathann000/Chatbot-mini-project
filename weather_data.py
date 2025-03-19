@@ -1,12 +1,18 @@
 import requests
 
-def get_api_key(filepath):
+def get_api_key(service, filepath):
     try:
         with open(filepath, "r") as file:
-            return file.readline().strip() 
+            for line in file:
+                key, value = line.strip().split("=") 
+                if key == service:
+                    return value
     except FileNotFoundError:
-        print("API key file not found.")
-        return None
+        print(f"API key file '{filepath}' not found.")
+    except ValueError:
+        print("Invalid API key format in file. Use KEY=VALUE format.")
+    
+    return None
 
 def get_weather_data(api_key, location, days):
     base_url = "http://api.weatherapi.com/v1/forecast.json"
@@ -53,7 +59,7 @@ def get_filtered_weather_data(data):
         print("-------------------------------------------------")
 
 
-API_KEY = get_api_key("DesignOfAI-ass7/apikey.txt") 
+API_KEY = get_api_key("WEATHER_API","DesignOfAI-ass7/apikey.txt") 
 location = "London"
 days = 3
 weather_data = get_weather_data(API_KEY, location, days)
