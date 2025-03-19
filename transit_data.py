@@ -33,11 +33,35 @@ def get_transit_directions(api_key, origin, destination):
 def get_filtered_response(data):
     from_ = data["routes"][0]["legs"][0]["start_address"]
     to_ = data["routes"][0]["legs"][0]["end_address"]
+    print(f"To walk from {from_} to {to_}, please follow the steps")
+    i = 0
 
-    for steps in data["routes"][0]["legs"][0][]
+    for step in data["routes"][0]["legs"][0]["steps"]:
+    
+        travel_mode = step["travel_mode"]
+        if travel_mode == "WALKING":
+            i += 1
+            print(f"Step {i}:")
+            distance = step["distance"]["text"]
+            print(f" Walk {distance}")
+            print(f" {step['html_instructions']}")
 
 
-    print(f"You want to travel from {from_} to {to_}?")
+        elif travel_mode == "TRANSIT":
+            i += 1
+            transit_details = step["transit_details"]
+            line_name = transit_details["line"]["name"]
+            vehicle_type = transit_details["line"]["vehicle"]["type"]
+            departure_stop = transit_details["departure_stop"]["name"]
+            arrival_stop = transit_details["arrival_stop"]["name"]
+            departure_time = transit_details["departure_time"]["text"]
+            arrival_time = transit_details["arrival_time"]["text"]
+            print(f"Step {i}:")
+            print(f" Take {vehicle_type} ({line_name})")
+            print(f" From: {departure_stop} at {departure_time}")
+            print(f" To: {arrival_stop} at {arrival_time}")
+            print(f" Duration: {step['duration']['text']}")
+
 
 api_key = get_api_key("GOOGLE_API","DesignOfAI-ass7/apikey.txt") 
 response = get_transit_directions(api_key, "lindholmen", "chalmers")
