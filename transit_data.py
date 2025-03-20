@@ -1,5 +1,6 @@
 import requests
 
+
 def get_api_key(service, filepath):
     try:
         with open(filepath, "r") as file:
@@ -64,6 +65,8 @@ def get_filtered_response(data):
 
 
 def transit_app(location, destination):
-    api_key = get_api_key("GOOGLE_API","/Users/tjabo/Desktop/Skola/DesignOfAI/Assignments/Ass7/apikey.txt")
+    api_key = get_api_key("GOOGLE_API","apikey.txt")
     response = get_transit_directions(api_key, location, destination)
     get_filtered_response(response)
+
+#transit_app("stigbergstorget","björkö")
