@@ -77,27 +77,31 @@ def get_nearby_places(api_key, location, radius, type_, numberOfResults):
         print(f"Error fetching nearby {type_}(s): {e}")
         return None
 
-def get_filtered_response(data):
+def get_filtered_response(data, type_, numberOfResults):
     i = 0
-    for places in data["places"]:
-        i += 1 
-        loc = places["formattedAddress"]
-        name = places["displayName"]["text"]
-        rating = places["rating"]
-        opennow = places["regularOpeningHours"]["openNow"]
-        #currently unused
-        #schedule = places["regularOpeningHours"]["weekdayDescriptions"]
-        print(f"Here is result {i}: It's a place called {name}, with a rating of {rating}")
-        if(opennow):
-            print(f"{name} is currently open!")
-        else: 
-            print(f"{name} is unfortunately not open right now")
-        print("--------------------")
-        
+    try:
+        for places in data["places"]:
+            i += 1 
+            loc = places["formattedAddress"]
+            name = places["displayName"]["text"]
+            rating = places["rating"]
+            opennow = places["regularOpeningHours"]["openNow"]
+            #currently unused
+            #schedule = places["regularOpeningHours"]["weekdayDescriptions"]
+            print(f"Here is result {i}: It's a place called {name}, with a rating of {rating}")
+            if(opennow):
+                print(f"{name} is currently open!")
+            else: 
+                print(f"{name} is unfortunately not open right now")
+            print("--------------------")
+    except: 
+        print(f"I couldnt find {numberOfResults} result(s) matching {type_}")
+        print("Would like")
+            
 def places_app(location, radius, type_, numberOfResults):
     api_key = get_api_key("GOOGLE_API", "apikey.txt") 
     response = get_nearby_places(api_key, location, radius, type_, numberOfResults)
-    get_filtered_response(response)
+    get_filtered_response(response, type_, numberOfResults)
 
     
-    
+places_app("chalmers", 500, "restaurant", 3)
