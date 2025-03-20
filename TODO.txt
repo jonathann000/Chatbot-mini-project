@@ -1,7 +1,7 @@
 Improve classifier model
 
-Create (JSON) frame object for information 
+Create (JSON) frame object for information -- DONE
 
-Use spacy for information extraction -- Almost done
+Use spacy for information extraction -- DONE
 
 
