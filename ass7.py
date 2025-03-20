@@ -17,9 +17,13 @@ def ChatBot():
     reset_chat_context()
     print("Hello! I am chatbot. I am here to help you with your queries.")
     print("Please enter your query.")
+    print("To quit, simply write exit")
     while(True):
         query = input()
         query_type, confidence = analyze_input(query)
+
+        if query == "exit":
+            break
 
         if confidence < 0.95:
             if confidence > 0.8:
@@ -30,9 +34,6 @@ def ChatBot():
             else:
                 query_type = None
 
-        if query == "exit":
-            break
-        
         if query_type == "restaurant":
             location = load_chat_context()["places"]["location"]
             place_type = load_chat_context()["places"]["place_type"]
@@ -61,7 +62,7 @@ def ChatBot():
             elif "next week" in query:
                 day = "3"
             elif day is None:
-                print("What day are you interested in?")
+                print("What day are you interested in?") #maybe fix
                 day = input()
             update_chat_context("weather", "location", location)
             weather_app(location, day)

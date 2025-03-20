@@ -26,20 +26,23 @@ def get_transit_directions(api_key, origin, destination):
     try:
         response = requests.get(base_url, params=params)
         response.raise_for_status()
-        print(response.url)
+        #print(response.url)
         return response.json()
     except requests.exceptions.RequestException as e:
         print(f"Error fetching transit directions: {e}")
         return None
 
 def get_filtered_response(data, location, destination):
-    from_ = data["routes"][0]["legs"][0]["start_address"]
-    to_ = data["routes"][0]["legs"][0]["end_address"]
-    print(f"To walk from {from_} to {to_}, please follow the steps")
-    i = 0
-
-    try: 
+    if data["status"] == "ZERO_RESULTS":
+        print(f"I couldn't find any routes from {location} to {destination}")
+        print("Please try again")
+    else:    
+        from_ = data["routes"][0]["legs"][0]["start_address"]
+        to_ = data["routes"][0]["legs"][0]["end_address"]
+        print(f"To go from {from_} to {to_}, please follow the steps")
+        i = 0
         for step in data["routes"][0]["legs"][0]["steps"]:
+
             travel_mode = step["travel_mode"]
             if travel_mode == "WALKING":
                 i += 1
@@ -66,8 +69,6 @@ def get_filtered_response(data, location, destination):
                 print(f" From: {departure_stop} at {departure_time}")
                 print(f" To: {arrival_stop} at {arrival_time}")
                 print(f" Duration: {step['duration']['text']}")
-    except: 
-        print(f"I was unable to find a route from {location} to {destination}")
 
 def transit_app(location, destination):
     api_key = get_api_key("GOOGLE_API","apikey.txt")
