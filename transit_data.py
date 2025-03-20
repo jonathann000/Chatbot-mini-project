@@ -26,6 +26,7 @@ def get_transit_directions(api_key, origin, destination):
     try:
         response = requests.get(base_url, params=params)
         response.raise_for_status()
+        print(response.url)
         return response.json()
     except requests.exceptions.RequestException as e:
         print(f"Error fetching transit directions: {e}")
@@ -38,7 +39,6 @@ def get_filtered_response(data):
     i = 0
 
     for step in data["routes"][0]["legs"][0]["steps"]:
-    
         travel_mode = step["travel_mode"]
         if travel_mode == "WALKING":
             i += 1
@@ -51,7 +51,10 @@ def get_filtered_response(data):
         elif travel_mode == "TRANSIT":
             i += 1
             transit_details = step["transit_details"]
-            line_name = transit_details["line"]["name"]
+            try:
+                line_name = transit_details["line"]["name"]
+            except:
+                line_name = transit_details["line"]["short_name"]
             vehicle_type = transit_details["line"]["vehicle"]["type"]
             departure_stop = transit_details["departure_stop"]["name"]
             arrival_stop = transit_details["arrival_stop"]["name"]
@@ -63,10 +66,9 @@ def get_filtered_response(data):
             print(f" To: {arrival_stop} at {arrival_time}")
             print(f" Duration: {step['duration']['text']}")
 
-
 def transit_app(location, destination):
     api_key = get_api_key("GOOGLE_API","apikey.txt")
     response = get_transit_directions(api_key, location, destination)
     get_filtered_response(response)
 
-#transit_app("stigbergstorget","björkö")
+transit_app("gothenburg","madrid")
