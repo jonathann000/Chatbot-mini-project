@@ -96,7 +96,6 @@ def get_filtered_response(data, type_, numberOfResults):
             print("--------------------")
     except: 
         print(f"I couldnt find {numberOfResults} result(s) matching {type_}")
-        print("Would like")
             
 def places_app(location, type_, numberOfResults = 5, radius = 500):
     api_key = get_api_key("GOOGLE_API", "apikey.txt") 

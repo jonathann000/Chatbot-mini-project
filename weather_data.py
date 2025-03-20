@@ -43,20 +43,24 @@ def get_filtered_weather_data(data, days):
     wind_kph = data["current"]["wind_kph"]
     '''
 
-    print(f"{days}-days Weather Forecast for {location_name}, {country}:")
+    print(f"Weather Forecast for {location_name}, {country}:")
 
-    for day in data["forecast"]["forecastday"]:
-        date = day["date"]
-        max_temp = day["day"]["maxtemp_c"]
-        min_temp = day["day"]["mintemp_c"]
-        condition = day["day"]["condition"]["text"]
-        chance_of_rain = day["day"]["daily_chance_of_rain"]
+    try:
+        for day in data["forecast"]["forecastday"]:
+            date = day["date"]
+            max_temp = day["day"]["maxtemp_c"]
+            min_temp = day["day"]["mintemp_c"]
+            condition = day["day"]["condition"]["text"]
+            chance_of_rain = day["day"]["daily_chance_of_rain"]
 
-        print(f"\nDate: {date}")
-        print(f"- Condition: {condition}")
-        print(f"- Max Temp: {max_temp}°C, Min Temp: {min_temp}°C")
-        print(f"- Risk of Rain: {chance_of_rain}%")
-        print("-------------------------------------------------")
+            print(f"\nDate: {date}")
+            print(f"- Condition: {condition}")
+            print(f"- Max Temp: {max_temp}°C, Min Temp: {min_temp}°C")
+            print(f"- Risk of Rain: {chance_of_rain}%")
+            print("-------------------------------------------------")
+    except:
+        print(f"I couldn't find any forecast for {location_name}")
+        print("Maybe try another location?")
 
 def weather_app(location, days):
     API_KEY = get_api_key("WEATHER_API","apikey.txt") 
