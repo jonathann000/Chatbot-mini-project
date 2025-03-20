@@ -70,5 +70,3 @@ def transit_app(location, destination):
     api_key = get_api_key("GOOGLE_API","apikey.txt")
     response = get_transit_directions(api_key, location, destination)
     get_filtered_response(response)
-
-transit_app("gothenburg","madrid")

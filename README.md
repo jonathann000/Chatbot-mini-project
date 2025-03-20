@@ -1,0 +1,1 @@
+Requires en-core-web-sm download with "python -m spacy download en_core_web_sm"

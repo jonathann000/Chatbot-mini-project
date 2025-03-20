@@ -1,5 +1,3 @@
-import psycopg2
-import re
 import numpy as np
 import joblib
 from langchain_nomic.embeddings import NomicEmbeddings
@@ -61,6 +59,7 @@ def ChatBot():
         elif query_type == "transport":
             #departure, arrival = None, None
             arrival = load_chat_context()["transport"]["location"]
+            departure = load_chat_context()["transport"]["departure"]
             query_departure, query_arrival = nlp_app(query)
             if query_arrival is not None:
                 arrival = query_arrival

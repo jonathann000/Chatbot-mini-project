@@ -13,6 +13,7 @@ def load_chat_context():
             "transport": {
                 "location": None,
                 "day": None,
+                "departure": None,
                 "arrival": None
             },
             "places": {
@@ -56,6 +57,7 @@ def reset_chat_context():
             "transport": {
                 "location": None,
                 "day": None,
+                "departure": None,
                 "arrival": None
             },
             "places": {
