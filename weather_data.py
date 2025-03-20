@@ -63,5 +63,7 @@ def weather_app(location, days):
     weather_data = get_weather_data(API_KEY, location, days)
     get_filtered_weather_data(weather_data, days)
 
+    #fix
+
 
 
