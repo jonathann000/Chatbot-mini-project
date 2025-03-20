@@ -5,6 +5,8 @@ import joblib
 from langchain_nomic.embeddings import NomicEmbeddings
 from transit_data import transit_app
 from weather_data import weather_app
+from nlp_script import nlp_app, nlp_location
+from places_data import places_app
 
 # Load the pretrained classifier
 classifier = joblib.load('trained_classifier_model.pkl')
@@ -20,17 +22,7 @@ def connect_db():
     )
 
 def ChatBot():
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT DISTINCT * FROM locations")
-    locations = [row[0] for row in cursor.fetchall()] 
-    conn.close()
-
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT DISTINCT * FROM foods")
-    foods = [row[0] for row in cursor.fetchall()]  
-    conn.close()
+    
 
     print("Hello! I am chatbot. I am here to help you with your queries.")
     print("Please enter your query.")
@@ -43,42 +35,43 @@ def ChatBot():
         if(query_type == "restaurant" or query_type == "weather" or query_type == "transport"):
             print("You asked me about", query_type)
         if query_type == "restaurant":
-            query = query.lower()
             location = None
-            food_type = None
-            for loc in locations:
-                if loc.lower() in query:
-                    location = loc
-                    break
-            for food in foods:
-                if food.lower() in query:
-                    food_type = food
-                    break
-            restaurant_query(query, location, food_type)
+            location = nlp_location(query)
+            if location is None:
+                print("What location are you interested in?")
+                location = input()
+            places_app(location)
+            #restaurant_query(query, location, food_type)
             break
         elif query_type == "weather":
-            query = query.lower()
             location = None
+            location = nlp_location(query)
             day = None
-            print("What location are you interested in?")
-            location = input()
+            if location is None:
+                print("What location are you interested in?")
+                location = input()
             if "today" in query:
                 day = "1"
             elif "tomorrow" in query:
                 day = "2"
             elif "next week" in query:
                 day = "3"
+            else:
+                print("What day are you interested in?")
+                day = input()
             weather_app(location, day)
             #weather_query(query, location, day)
             break
         elif query_type == "transport":
-            query = query.lower()
             departure, arrival = None, None
-            print("Please enter the departure location")
-            departure = input()
-            print("Please enter the arrival location")
-            arrival = input()
-            print(departure, arrival)
+            departure, arrival = nlp_app(query)
+            if departure is None:
+                print("Please enter the departure location")
+                departure = input()
+            if arrival is None:
+                print("Please enter the arrival location")
+                arrival = input()
+            print(f"from: {departure}, to: {arrival}")
             transit_app(departure, arrival)
             #train_query(departure, arrival)
             break
@@ -165,5 +158,5 @@ def train_query(departure, arrival):
     else:
         print(f'Sorry, no trains match your search criteria. {departure} to {arrival}')
 
-connect_db()  
+#connect_db()  
 ChatBot()

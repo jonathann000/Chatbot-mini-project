@@ -98,7 +98,7 @@ def get_filtered_response(data, type_, numberOfResults):
         print(f"I couldnt find {numberOfResults} result(s) matching {type_}")
         print("Would like")
             
-def places_app(location, radius, type_, numberOfResults):
+def places_app(location, type_, numberOfResults = 5, radius = 500):
     api_key = get_api_key("GOOGLE_API", "apikey.txt") 
     response = get_nearby_places(api_key, location, radius, type_, numberOfResults)
     get_filtered_response(response, type_, numberOfResults)
