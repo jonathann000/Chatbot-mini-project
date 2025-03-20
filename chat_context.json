@@ -1,18 +1,18 @@
 {
     "transport": {
-        "location": "Gothenburg",
+        "location": null,
         "day": null,
-        "departure": "Gothenburg",
-        "arrival": "Gothenburg"
+        "departure": null,
+        "arrival": null
     },
     "places": {
-        "location": "Gothenburg",
+        "location": null,
         "place_type": "restaurant",
         "radius": 500,
         "number_of_results": 5
     },
     "weather": {
-        "location": "Gothenburg",
+        "location": null,
         "day": null
     }
 }

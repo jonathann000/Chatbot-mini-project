@@ -32,6 +32,7 @@ def nlp_app(text):
     matcher = Matcher(nlp.vocab)
 
     pattern_from = [{"LOWER": "from"}, {"POS": "PROPN"}]  # English
+    pattern_in = [{"LOWER": "in"}, {"POS": "PROPN"}]  # English
     pattern_to = [{"LOWER": "to"}, {"POS": "PROPN"}]  # English
 
     matcher.add("FROM_LOCATION", [pattern_from])
@@ -51,6 +52,8 @@ def nlp_app(text):
             location = expanded_name
         elif label == "TO_DESTINATION":
             destination = expanded_name
+        elif label == "IN_LOCATION":
+            location = expanded_name
 
     #print(f"Location: {location}")
     #print(f"Destination: {destination}")
