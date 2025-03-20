@@ -2,7 +2,7 @@
     "transport": {
         "location": "Gothenburg",
         "day": null,
-        "departure": "Stockholm",
+        "departure": "Gothenburg",
         "arrival": "Gothenburg"
     },
     "places": {

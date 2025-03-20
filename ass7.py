@@ -19,7 +19,16 @@ def ChatBot():
     print("Please enter your query.")
     while(True):
         query = input()
-        query_type = analyze_input(query)
+        query_type, confidence = analyze_input(query)
+
+        if confidence < 0.95:
+            if confidence > 0.8:
+                print(f"Are you asking about {query_type}. Answer yes/no")
+                answer = input()
+                if answer.lower() == "no":
+                    query_type = None
+            else:
+                query_type = None
 
         if query == "exit":
             break
@@ -76,11 +85,11 @@ def ChatBot():
             update_chat_context("transport", "arrival", arrival)
             transit_app(departure, arrival)
             update_chat_context("transport", "location", arrival)
-            
+        elif query_type is None:
+            print("I am not sure what you are asking. Could you please clarify?")
         else:
-            print("Sorry, I can't help you with that query.")
-            print("Maybe try again?")
-            print("Or if you want to exit, please write exit")
+            print("You fucked up")
+
 
 def analyze_input(question):
     question = question.lower()
@@ -88,10 +97,11 @@ def analyze_input(question):
     # Generate embeddings for the question
     question_embedding = np.array([embedding_model.embed_query(question)])
 
-    # Predict the query type using the classifier
-    predicted_category = classifier.predict(question_embedding)[0]
+    # Get prediction probabilities
+    probabilities = classifier.predict_proba(question_embedding)[0]
+    predicted_category = classifier.classes_[np.argmax(probabilities)]
+    confidence = np.max(probabilities)  # Get the highest probability
 
-    # Return the predicted category
-    return predicted_category
+    return (predicted_category, confidence)
     
 ChatBot()
