@@ -104,4 +104,3 @@ def places_app(location, type_, numberOfResults = 5, radius = 500):
     get_filtered_response(response, type_, numberOfResults)
 
     
-places_app("chalmers", 500, "restaurant", 3)

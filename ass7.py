@@ -7,6 +7,7 @@ from transit_data import transit_app
 from weather_data import weather_app
 from nlp_script import nlp_app, nlp_location
 from places_data import places_app
+from context import load_chat_context, update_chat_context, reset_chat_context
 
 # Load the pretrained classifier
 classifier = joblib.load('trained_classifier_model.pkl')
@@ -14,16 +15,8 @@ classifier = joblib.load('trained_classifier_model.pkl')
 # Initialize embedding model
 embedding_model = NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local")
 
-def connect_db():
-    return psycopg2.connect(
-        host="localhost",
-        user="postgres",
-        password="postgres",
-    )
-
 def ChatBot():
-    
-
+    reset_chat_context()
     print("Hello! I am chatbot. I am here to help you with your queries.")
     print("Please enter your query.")
     while(True):
@@ -32,21 +25,25 @@ def ChatBot():
 
         if query == "exit":
             break
-        if(query_type == "restaurant" or query_type == "weather" or query_type == "transport"):
-            print("You asked me about", query_type)
+        
         if query_type == "restaurant":
-            location = None
-            location = nlp_location(query)
+            location = load_chat_context()["places"]["location"]
+            place_type = load_chat_context()["places"]["place_type"]
+            query_location = nlp_location(query)
+            if query_location is not None:
+                location = query_location
             if location is None:
                 print("What location are you interested in?")
                 location = input()
-            places_app(location)
-            #restaurant_query(query, location, food_type)
-            break
+            update_chat_context("places", "location", location)
+            places_app(location, place_type)
+            
         elif query_type == "weather":
-            location = None
-            location = nlp_location(query)
-            day = None
+            location = load_chat_context()["weather"]["location"]
+            day = load_chat_context()["weather"]["day"]
+            query_location = nlp_location(query)
+            if query_location is not None:
+                location = query_location
             if location is None:
                 print("What location are you interested in?")
                 location = input()
@@ -56,15 +53,19 @@ def ChatBot():
                 day = "2"
             elif "next week" in query:
                 day = "3"
-            else:
+            elif day is None:
                 print("What day are you interested in?")
                 day = input()
+            update_chat_context("weather", "location", location)
             weather_app(location, day)
-            #weather_query(query, location, day)
-            break
         elif query_type == "transport":
-            departure, arrival = None, None
-            departure, arrival = nlp_app(query)
+            #departure, arrival = None, None
+            arrival = load_chat_context()["transport"]["location"]
+            query_departure, query_arrival = nlp_app(query)
+            if query_arrival is not None:
+                arrival = query_arrival
+            if query_departure is not None:
+                departure = query_departure
             if departure is None:
                 print("Please enter the departure location")
                 departure = input()
@@ -72,9 +73,11 @@ def ChatBot():
                 print("Please enter the arrival location")
                 arrival = input()
             print(f"from: {departure}, to: {arrival}")
+            update_chat_context("transport", "departure", departure)
+            update_chat_context("transport", "arrival", arrival)
             transit_app(departure, arrival)
-            #train_query(departure, arrival)
-            break
+            update_chat_context("transport", "location", arrival)
+            
         else:
             print("Sorry, I can't help you with that query.")
             print("Maybe try again?")
@@ -92,71 +95,4 @@ def analyze_input(question):
     # Return the predicted category
     return predicted_category
     
-def weather_query(query, location, day):
-    if location is None:
-        print("What location are you interested in?")
-        location = input()
-    if day is None:
-        print("What day are you interested in?")
-        day = input()
-
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Weather WHERE LOWER(location_) %% LOWER(%s) AND LOWER(date_) %% LOWER(%s)", (location, day))
-    results = cursor.fetchall()
-    conn.close()
-
-    if results:
-        print("Here is the weather forecast in", location, "for", day)
-        for row in results:
-            print(f"- {row[2]}: {row[3]}")
-    else:
-        print("Sorry, I don't have any weather information for that location and time.")
-
-def restaurant_query(query, location, food_type):
-    query = query.lower()
-    if location is None:
-        print("What location are you looking for restaurants in?")
-        location = input()
-    if food_type is None:
-        print("What type of food are you interested in?")
-        food_type = input()
-
-    conn = connect_db()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT name_ FROM Restaurants WHERE LOWER(rest_location) %% LOWER(%s) AND LOWER(food_type) %% LOWER(%s)", (location, food_type))
-    results = cursor.fetchall()
-
-    conn.close()
-
-    if results:
-        print("Here are some restaurants that match your query:")
-        for row in results:
-            print(f"- {row[0]}")
-    else:
-        print("Sorry, no restaurants match your search criteria.")
-
-def train_query(departure, arrival):
-    if departure is None:
-        print("What is the departure station? ")
-        departure = input()
-    if arrival is None:
-        print("What is the arrival station?")
-        arrival = input()
-
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Trains WHERE LOWER(departure_location) %% LOWER(%s) AND LOWER(arrival_location) %% LOWER(%s)", (departure, arrival))
-    results = cursor.fetchall()
-    conn.close()
-
-    if results:
-        print("Here are the train schedules for your query:")
-        for row in results:
-            print(f"{row[3]} to {row[4]} - Departure Time: {row[2]}")
-    else:
-        print(f'Sorry, no trains match your search criteria. {departure} to {arrival}')
-
-#connect_db()  
 ChatBot()

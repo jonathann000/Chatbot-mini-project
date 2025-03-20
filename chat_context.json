@@ -1,0 +1,17 @@
+{
+    "transport": {
+        "location": "Stockholm",
+        "day": null,
+        "arrival": "Stockholm"
+    },
+    "places": {
+        "location": "Stockholm",
+        "place_type": "restaurant",
+        "radius": 500,
+        "number_of_results": 5
+    },
+    "weather": {
+        "location": "Stockholm",
+        "day": null
+    }
+}
