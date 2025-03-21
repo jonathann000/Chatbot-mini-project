@@ -6,9 +6,10 @@ from weather_data import weather_app
 from nlp_script import nlp_app, nlp_location
 from places_data import places_app
 from context import load_chat_context, update_chat_context, reset_chat_context
+from speller import correct_sentence
 
 # Load the pretrained classifier
-classifier = joblib.load('trained_classifier_model.pkl')
+classifier = joblib.load('trained_classifier_model_new.pkl')
 
 # Initialize embedding model
 embedding_model = NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local")
@@ -20,6 +21,7 @@ def ChatBot():
     print("To quit, simply write exit")
     while(True):
         query = input()
+        query = correct_sentence(query)
         query_type, confidence = analyze_input(query)
 
         if query == "exit":
@@ -94,7 +96,6 @@ def ChatBot():
 
 def analyze_input(question):
     question = question.lower()
-
     # Generate embeddings for the question
     question_embedding = np.array([embedding_model.embed_query(question)])
 
