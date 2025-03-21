@@ -37,6 +37,7 @@ def nlp_app(text):
 
     matcher.add("FROM_LOCATION", [pattern_from])
     matcher.add("TO_DESTINATION", [pattern_to])
+    matcher.add("IN_LOCATION", [pattern_in])
 
 
     matches = matcher(doc)

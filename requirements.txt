@@ -2,5 +2,5 @@ spacy
 numpy
 joblib
 langchain-nomic
-
+pyspellchecker
 

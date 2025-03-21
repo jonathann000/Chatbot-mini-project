@@ -1,4 +1,4 @@
-Improve classifier model
+Improve classifier model -- DONE
 
 Create (JSON) frame object for information -- DONE
 
