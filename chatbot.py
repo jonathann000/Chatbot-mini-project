@@ -13,12 +13,11 @@ classifier = joblib.load('trained_classifier_model_new.pkl')
 
 # Initialize embedding model
 embedding_model = NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local")
-
 def ChatBot():
     reset_chat_context()
     print("Hello! I am chatbot. I am here to help you with your queries.")
-    print("Please enter your query.")
     print("To quit, simply write exit")
+    print("What can I help you with?")
     while(True):
         query = input()
         query = correct_sentence(query)
@@ -29,7 +28,7 @@ def ChatBot():
 
         if confidence < 0.95:
             if confidence > 0.8:
-                print(f"Are you asking about {query_type}. Answer yes/no")
+                print(f"Hmm, are you asking about {query_type}? Answer yes/no")
                 answer = input()
                 if answer.lower() == "no":
                     query_type = None
@@ -68,6 +67,7 @@ def ChatBot():
                 day = input()
             update_chat_context("weather", "location", location)
             weather_app(location, day)
+
         elif query_type == "transport":
             #departure, arrival = None, None
             arrival = load_chat_context()["transport"]["location"]

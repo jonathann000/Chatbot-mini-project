@@ -11,8 +11,6 @@ def get_api_key(service, filepath):
                     return value
     except FileNotFoundError:
         print(f"API key file '{filepath}' not found.")
-    except ValueError:
-        print("Invalid API key format in file.") 
 
 
 def get_coordinates(api_key, location):
@@ -62,6 +60,7 @@ def get_nearby_places(api_key, location, radius, type_, numberOfResults):
             }
         }
     }
+    #additional information can be fetched by adding arguments in "X-Goog-FieldMask"
     headers = {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": api_key,
@@ -70,7 +69,7 @@ def get_nearby_places(api_key, location, radius, type_, numberOfResults):
 
     try:
         response = requests.post(base_url, headers=headers, data=json.dumps(payload))
-        response.raise_for_status()
+        #response.raise_for_status()
         #print(response.json())  
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -88,9 +87,14 @@ def get_filtered_response(data, type_, numberOfResults):
             opennow = places["regularOpeningHours"]["openNow"]
             #currently unused
             #schedule = places["regularOpeningHours"]["weekdayDescriptions"]
-            print(f"Here is result {i}: It's a place called {name}, with a rating of {rating}")
+            
+            print(f"Here is result {i}")
+            if rating >= 4.5:
+                print(f"This place seems nice, It's a place called {name}, with a rating of {rating}")  
+            else:
+                print(f"There is a place called {name}, it has a rating of {rating}")          
             if(opennow):
-                print(f"{name} is currently open!")
+                print(f"As of right now, {name} is open!")
             else: 
                 print(f"{name} is unfortunately not open right now")
             print("--------------------")

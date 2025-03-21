@@ -10,9 +10,6 @@ def get_api_key(service, filepath):
                     return value
     except FileNotFoundError:
         print(f"API key file '{filepath}' not found.")
-    except ValueError:
-        print("Invalid API key format in file. Use KEY=VALUE format.") 
-
 
 def get_transit_directions(api_key, origin, destination):
     base_url = "https://maps.googleapis.com/maps/api/directions/json"

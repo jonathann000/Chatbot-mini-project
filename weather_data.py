@@ -8,10 +8,7 @@ def get_api_key(service, filepath):
                 if key == service:
                     return value
     except FileNotFoundError:
-        print(f"API key file '{filepath}' not found.")
-    except ValueError:
-        print("Invalid API key format in file. Use KEY=VALUE format.")
-    
+        print(f"API key file '{filepath}' not found.")    
     return None
 
 def get_weather_data(api_key, location, days):
@@ -36,6 +33,7 @@ def get_weather_data(api_key, location, days):
 def get_filtered_weather_data(data, days):
     location_name = data["location"]["name"]
     country = data["location"]["country"]
+    #if we want we can extract more. . . 
     '''
     temp_c = data["current"]["temp_c"]
     condition = data["current"]["condition"]["text"]
